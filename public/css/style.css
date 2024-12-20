@@ -52,10 +52,11 @@ body{
 }
 
 /* cards */
-.card{
-    border: none !important;
-    margin-bottom:2rem;
+.listingcard {
+    border: none !important; /* Remove border, though use !important sparingly */
+    margin-bottom: 2rem; /* Bottom margin for spacing */
 }
+
 .card-img-top{
     border-radius: 1rem !important;
     width :100%  !important;

@@ -76,7 +76,7 @@ app.get("/listings/:id",
     wrapAsync (async (req, res) => {
     const { id } = req.params;
     try {
-        const listing = await Listing.findById(id);
+        const listing = await Listing.findById(id).populate("reviews");
         if (!listing) {
             return res.status(404).send("Listing not found");
         }
@@ -94,7 +94,9 @@ app.post(
      wrapAsync(async (req, res , next) => {      
         const newListing = new Listing(req.body.listing);
         await newListing.save();
-        res.redirect("/listings")
+        // res.redirect("/listings")
+        console.log(listing.reviews);
+
 }));
 
 //Edit Route
@@ -137,6 +139,18 @@ app.post("/listings/:id/reviews" , validateReview ,
     res.redirect(`/listings/${listing._id}`);
 
 }))
+
+//Reviews Delete Route
+app.delete("/listings/:id/reviews/:reviewId", 
+    wrapAsync(async (req, res) => {
+    let { id , reviewId } = req.params;
+
+    await Listing.findByIdAndUpdate(id , {$pull : { reviews : reviewId}});
+     await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/listings/${id}`)
+}));
+
 
 // app.get("/testListing" , async(req , res) =>{
 //     let sampleListing = new Listing({
