@@ -36,13 +36,15 @@ router.get("/new",
 // Show Route: View a single listing by ID
 router.get("/:id", wrapAsync(async (req, res, next) => {
     const { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id)
+    .populate("reviews")
+    .populate("owner");
 
     if (!listing) {
        req.flash("error" , "Listing you request for doesn't exist!")
        res.redirect("/listings");
     }
-
+   console.log(listing)
     res.render("listing/show", { listing });
 }));
 
@@ -53,6 +55,10 @@ router.post(
     ValidateListing, 
     wrapAsync(async (req, res, next) => {      
       const newListing = new Listing(req.body.listing);
+
+      // Assign the owner field to the currently logged-in user's ID
+     newListing.owner = req.user._id;
+
       await newListing.save();
   
       // Set the success flash message

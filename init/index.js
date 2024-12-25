@@ -9,11 +9,14 @@ async function main() {
     await mongoose.connect(mongoURI);
 }
 
-// Initialize database with sample data
+// Initialize database 
 const initDB = async () => {
-    await Listing.deleteMany({}); // Clear existing data
-    await Listing.insertMany(initData.data); // Insert sample data
-    console.log("Database initialized with sample data");
+    await Listing.deleteMany({}); 
+    initData.data = initData.data.map((obj) =>({
+        ...obj , 
+        owner: "673f42f9f4f1f9af5b75406e"}))
+    await Listing.insertMany(initData.data);
+    console.log("Database initialized");
 };
 
 // Main execution flow

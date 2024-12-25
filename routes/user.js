@@ -3,51 +3,39 @@ const router = express.Router();
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const passport = require("passport");
+const {saveRedirectUrl} = require("../middleware.js")
+
+
+router.get("/signup", (req, res) => {
+  res.render("users/signup.ejs"); // Render the signup page
+})
+
 
 // Render Signup Page
-router.get("/signup", (req, res) => {
-  res.render("users/signup.ejs");
-});
-
-// Handle Signup
 router.post(
   "/signup",
   wrapAsync(async (req, res) => {
     try {
-      const { username, email, password } = req.body;
-
-      // Check for existing user with the same username or email
-      const existingUser = await User.findOne({ username });
-      if (existingUser) {
-        req.flash("error", "A user with that username already exists.");
-        return res.redirect("/signup");
-      }
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        req.flash("error", "A user with that email already exists.");
-        return res.redirect("/signup");
-      }
-
-      // Register the new user
+      let { username, email, password } = req.body;
       const newUser = new User({ email, username });
       const registeredUser = await User.register(newUser, password);
       console.log(registeredUser);
-
-      // Automatically log in the user after signup
-      req.login(registeredUser, (err) => {
-        if (err) {
-          req.flash("error", "Something went wrong with auto-login.");
-          return res.redirect("/login");
+       req.login( registeredUser , (err) =>{
+        if(err) {
+          return next(err);
         }
+
         req.flash("success", "Welcome to Wanderlust!");
         res.redirect("/listings");
-      });
+
+       });
     } catch (e) {
       req.flash("error", e.message);
       res.redirect("/signup");
     }
   })
 );
+
 
 // Render Login Page
 router.get("/login", (req, res) => {
@@ -57,15 +45,29 @@ router.get("/login", (req, res) => {
 // Handle Login
 router.post(
   "/login",
+  saveRedirectUrl,
   passport.authenticate("local", {
     failureRedirect: "/login",
     failureFlash: true,
   }),
-  (req, res) => {
+   async(req, res) => {
     req.flash("success", "Welcome back to Wanderlust!");
-   
-    res.redirect("/listings");
+    let redirectUrl = res.locals.redirectUrl || "/listings"
+    res.redirect(redirectUrl);
   }
 );
+
+ 
+router.get("/logout" , (req, res , next)=> {
+  req.logout((err) =>{
+    if(err){
+       return next(err);
+    }
+    req.flash("success" , "you are logged out!");
+   res.redirect("/listings");
+  })
+})
+
+
 
 module.exports = router;
