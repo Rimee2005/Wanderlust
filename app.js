@@ -13,8 +13,6 @@ const User = require("./models/user.js");
 
 
 
-
-
 const listingRouter = require("./routes/listing.js"); // Ensure correct import
 const reviewsRouter = require("./routes/review.js"); // Ensure correct import
 const userRouter = require("./routes/user.js");

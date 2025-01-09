@@ -35,16 +35,40 @@ module.exports.isOwner = async(req , res , next) => {
     next();
 }
 
-module.exports.isReviewAuthor = async(req , res , next) => {
-    let {id ,  reviewid } = req.params;
-    let review = await Review.findById(id);
-    if(!review.author.equals(res.locals.currUser._id)){
-        req.flash("error" , "You are not the author of this review");
-        return res.redirect(`/listings/${id}`)
-    }
+module.exports.isReviewAuthor = async (req, res, next) => {
+    const { id, reviewId } = req.params; // Correctly use `reviewid`
+    // console.log("Review ID:", reviewid);
+    // console.log("Listing ID:", id);
 
-    next();
-}
+    try {
+        // Find the review by `reviewid`
+        const review = await Review.findById(reviewId);
+
+        // Handle the case where the review is not found
+        if (!review) {
+            req.flash("error", "Review not found!");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        // Check if the current user is the author of the review
+        if (!review.author.equals(res.locals.currUser._id)) {
+            req.flash("error", "You are not authorized to delete this review!");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        next(); // Allow the request to proceed
+    } catch (err) {
+        console.error("Error in isReviewAuthor middleware:", {
+            error: err.message,
+            reviewId,
+            userId: res.locals.currUser ? res.locals.currUser._id : "Not Logged In",
+        });
+        req.flash("error", "Something went wrong. Please try again.");
+        res.redirect(`/listings/${id}`);
+    }
+};
+
+
 
 
 //Validation of serverside for listings
