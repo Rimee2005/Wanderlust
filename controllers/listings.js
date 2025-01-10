@@ -32,16 +32,19 @@ module.exports.showListing = async (req, res, next) => {
     res.render("listing/show", { listing });
 };
 
-module.exports.createListing = async (req, res, next) => {      
+module.exports.createListing = async (req, res, next) => {    
+      let url = req.file.path;
+      let filename = req.file.filename;
+      console.log(url, ".." , filename)
     const newListing = new Listing(req.body.listing);
 
     // Assign the owner field to the currently logged-in user's ID
    newListing.owner = req.user._id;
-
+   newListing.image = {url , filename};
   const savedListing = await newListing.save();
   const populatedListing = await Listing.findById(savedListing._id).populate('owner');
   
-  console.log(populatedListing);
+//   console.log(populatedListing);
     // Set the success flash message
     req.flash("success", "New Listing Created");
 
