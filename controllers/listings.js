@@ -35,7 +35,7 @@ module.exports.showListing = async (req, res, next) => {
 module.exports.createListing = async (req, res, next) => {    
       let url = req.file.path;
       let filename = req.file.filename;
-      console.log(url, ".." , filename)
+
     const newListing = new Listing(req.body.listing);
 
     // Assign the owner field to the currently logged-in user's ID
@@ -61,13 +61,24 @@ module.exports.createListing = async (req, res, next) => {
           return res.redirect("/listings");
        }
    
-      res.render("listing/edit", { listing });
+    let originalImageUrl = listing.image.url;
+    originalImageUrl = originalImageUrl.replace("/upload" , "/upload/w_250")
+
+      res.render("listing/edit", { listing , originalImageUrl });
   });
 
 
   module.exports.updateListing = async (req, res) => {
       let { id } = req.params;
-      await Listing.findByIdAndUpdate(id , {...req.body.listing});
+      let listing= await Listing.findByIdAndUpdate(id , {...req.body.listing});
+    
+      if(typeof req.file !=="undefined"){
+      let url = req.file.path;
+      let filename = req.file.filename;
+      listing.image = {url , filename};
+      await listing.save();
+      }
+
       req.flash("success" , "Listing Updated")
       res.redirect(`/listings/${id}`)
   };

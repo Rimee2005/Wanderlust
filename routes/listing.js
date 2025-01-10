@@ -15,8 +15,8 @@ const listingController = require("../controllers/listings.js")
   .get( wrapAsync(listingController.index))
   .post(
     isLoggedIn,
-    // ValidateListing, 
     upload.single('listing[image]'),
+    ValidateListing, 
     wrapAsync(listingController.createListing),
   )
 
@@ -28,6 +28,7 @@ router.route("/:id")
  .put( 
     isLoggedIn,
     isOwner,
+    upload.single('listing[image]'),
     ValidateListing,
     wrapAsync(listingController.updateListing))
     .delete( 
