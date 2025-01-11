@@ -1,28 +1,157 @@
-<% layout ("/layouts/boilerplate") %>
+<% layout("/layouts/boilerplate") %>
 <%= success %>
 
-<h3>All Listings</h3>
+<style>
+  /* Navbar styles */
+  .btn-search {
+    background-color: #fe424d;
+    color: #fff;
+    border-radius: 25px;
+    padding: 0 1rem 0 1rem;
+  }
 
+  .btn-search:hover {
+    background-color: #fe424d;
+    color: #fff;
+  }
 
-    <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1">
-        <% for (let listing of allListings) { %> 
-            <a href="/listings/<%= listing._id %>" class="listing-link"> 
-                <div class="card col listingcard">
-                    <img 
-                        src="<%= listing.image.url %>" 
-                        class="card-img-top" 
-                        alt="listing_image"  
-                        style="height: 20rem;" 
-                    />
-                    <div class="card-img-overlay"></div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <b>  <%= listing.title %> </b> <br>
-                            &#8377; <%= listing.price.toLocaleString('en-In') %>
-                        </p>
-                    </div>
-                </div>
-            </a>
-        <% } %>
+  /* Category icons styles */
+  .category-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .category-icons a {
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .category-icons a:hover {
+    color: #fe424d;
+  }
+
+  .category-icons i {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  /* Toggle switch styles */
+  .tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    margin-left: 5rem;
+    display: flex;
+    text-align: center;
+
+  }
+
+  .form-check-input {
+    cursor: pointer;
+  }
+  .tax-info{
+    display: none;
+  }
+</style>
+
+<!-- Category icons section -->
+<div class="category-icons">
+    <a href="/listings?category=Trending">
+      <i class="fas fa-fire"></i>
+      <span>Trending</span>
+    </a>
+    <a href="/listings?category=Rooms">
+      <i class="fas fa-bed"></i>
+      <span>Rooms</span>
+    </a>
+    <a href="/listings?category=Iconic Cities">
+      <i class="fas fa-city"></i>
+      <span>Iconic Cities</span>
+    </a>
+    <a href="/listings?category=Mountains">
+      <i class="fas fa-mountain"></i>
+      <span>Mountains</span>
+    </a>
+    <a href="/listings?category=Castles">
+      <i class="fas fa-chess-rook"></i>
+      <span>Castles</span>
+    </a>
+    <a href="/listings?category=Pools">
+      <i class="fas fa-swimming-pool"></i>
+      <span>Pools</span>
+    </a>
+    <a href="/listings?category=Farms">
+      <i class="fas fa-tractor"></i>
+      <span>Farms</span>
+    </a>
+    <a href="/listings?category=Arctic">
+      <i class="fas fa-igloo"></i>
+      <span>Arctic</span>
+    </a>
+    <a href="/listings?category=Camping">
+      <i class="fas fa-campground"></i>
+      <span>Camping</span>
+    </a>
+    <a href="/listings?category=Domes">
+      <i class="fa-solid fa-igloo"></i>
+      <span>Domes</span>
+    </a>
+    <a href="/listings?category=Beaches">
+      <i class="fas fa-umbrella-beach"></i>
+      <span>Beaches</span>
+    </a>
+    <!-- Tax toggle switch -->
+  <div class="tax-toggle ">
+    <div class="form-check form-check-reverse form-switch">
+      <input 
+        class="form-check-input" 
+        type="checkbox" 
+        role="switch" 
+        id="flexSwitchCheckDefault">
+      <label class="form-check-label" for="flexSwitchCheckDefault">
+        Display total after taxes
+      </label>
     </div>
-</body>
+  </div>
+  </div>
+  
+<div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-3">
+    <% for (let listing of allListings) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+            <div class="card col listingcard">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem;" />
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <b><%= listing.title %></b> <br>
+                        &#8377; <%= listing.price.toLocaleString('en-In') %> /night
+                        <i class="tax-info">&nbsp; +18% GST</i>
+                    </p>
+                </div>
+            </div>
+        </a>
+    <% } %>
+</div>
+
+<script>
+let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+taxSwitch.addEventListener("click" , () =>{
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for(info of taxInfo){
+        if(info.style.display != "inline"){
+            info.style.display = "inline"
+        } else{
+            info.style.display = "none"
+        }
+    }
+})
+</script>
