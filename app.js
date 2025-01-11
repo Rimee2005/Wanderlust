@@ -81,9 +81,9 @@ app.use((req, res, next) => {
   });
   
 
-app.get("/", (req, res) => {
-    res.send("Hii");
-});
+// app.get("/", (req, res) => {
+//     res.send("Hii");
+// });
 
 app.use("/listings", listingRouter); 
 app.use("/listings/:id/reviews", reviewsRouter); 

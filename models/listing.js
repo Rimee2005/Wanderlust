@@ -41,7 +41,7 @@ const listingSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "Users" ,
         required: true
-    }
+    },
 });
 
 listingSchema.post("findOneAndDelete" , async(listing) =>{
