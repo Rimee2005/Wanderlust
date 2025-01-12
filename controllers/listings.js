@@ -64,24 +64,31 @@ module.exports.createListing = async (req, res, next) => {
     let originalImageUrl = listing.image.url;
     originalImageUrl.replace("/upload" ,"/upload/w_250")
 
-      res.render("listing/edit", { listing });
+      res.render("listing/edit", { listing  ,
+        originalImageUrl: listing.image,
+      });
   });
 
 
   module.exports.updateListing = async (req, res) => {
-      let { id } = req.params;
-      let listing= await Listing.findByIdAndUpdate(id , {...req.body.listing});
-    
-      if(typeof req.file !=="undefined"){
-      let url = req.file.path;
-      let filename = req.file.filename;
-      listing.image = {url , filename};
-      await listing.save();
-      }
+    let { id } = req.params;
 
-      req.flash("success" , "Listing Updated")
-      res.redirect(`/listings/${id}`)
-  };
+    // Update listing details
+    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+
+    // Update image if a new file is uploaded
+    if (typeof req.file !== "undefined") {
+        console.log("Uploaded File:", req.file); // Debug log
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = { url, filename }; // Save the uploaded image details
+        await listing.save();
+    }
+
+    req.flash("success", "Listing Updated");
+    res.redirect(`/listings/${id}`);
+};
+
 
 
   module.exports.destroyListing = async (req, res) => {
