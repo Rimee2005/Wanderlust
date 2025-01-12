@@ -145,7 +145,10 @@ Open a pull request.
 For any inquiries, feel free to reach out via:
 
 Email: rimjhimjha961@gmail.com
+
 GitHub: https://github.com/Rimee2005
+
 LinkedIn: https://www.linkedin.com/in/rimjhim-jha-b1b86b301/
+
 
 
