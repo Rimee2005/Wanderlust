@@ -54,7 +54,7 @@ Steps:
 Clone the Repository:
 bash
 Copy code
-git clone https://github.com/YourUsername/wanderlust.git
+git clone https://github.com/Rimee2005/Wanderlust
 cd wanderlust
 Install Dependencies:
 
